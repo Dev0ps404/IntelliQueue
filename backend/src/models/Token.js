@@ -45,8 +45,9 @@ const tokenSchema = new mongoose.Schema(
     },
     priorityReasonDescription: {
       type: String,
-      default: null,
+      required: true,
       trim: true,
+      minlength: 3,
       maxlength: 300,
     },
     priority: {

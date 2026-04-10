@@ -32,9 +32,7 @@ export const createToken = asyncHandler(async (req, res) => {
       phone: req.body.phone,
       isPriority,
       priorityReason: isPriority ? req.body.priorityReason || null : null,
-      priorityReasonDescription: isPriority
-        ? req.body.priorityReasonDescription || null
-        : null,
+      priorityReasonDescription: req.body.priorityReasonDescription,
       priority: resolvedPriority,
       includeQr: req.body.includeQr,
       deviceId: req.body.deviceId,

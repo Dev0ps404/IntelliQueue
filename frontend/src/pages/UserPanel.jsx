@@ -158,7 +158,7 @@ const UserPanel = () => {
       nextErrors.priorityReason = "Select a priority reason.";
     }
 
-    if (payload.isPriority && !payload.priorityReasonDescription.trim()) {
+    if (!payload.priorityReasonDescription.trim()) {
       nextErrors.priorityReasonDescription = "Reason description is required.";
     }
 
@@ -173,9 +173,7 @@ const UserPanel = () => {
       ...current,
       isPriority,
       priorityReason: isPriority ? current.priorityReason : "",
-      priorityReasonDescription: isPriority
-        ? current.priorityReasonDescription
-        : "",
+      priorityReasonDescription: current.priorityReasonDescription,
     }));
     setIsFormOpen(true);
   }, []);
@@ -223,9 +221,7 @@ const UserPanel = () => {
       phone: formData.phone.trim(),
       isPriority: formData.isPriority,
       priorityReason: formData.isPriority ? formData.priorityReason : null,
-      priorityReasonDescription: formData.isPriority
-        ? formData.priorityReasonDescription.trim()
-        : null,
+      priorityReasonDescription: formData.priorityReasonDescription.trim(),
       priority: formData.isPriority ? "priority" : "normal",
     };
 
@@ -496,7 +492,18 @@ const UserPanel = () => {
                     </span>
                     <div>
                       <p className="text-sm font-semibold text-slate-900">
-                        {isMine ? "You" : `Session ${item.displayToken}`}
+                        {isMine
+                          ? `You · ${item.displayToken}`
+                          : `Session ${item.displayToken}`}
+                      </p>
+                      <p className="mt-0.5 text-xs text-slate-500">
+                        Name: {item.name || "-"}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        Reason:{" "}
+                        {item.priorityReasonDescription ||
+                          item.priorityReason ||
+                          "-"}
                       </p>
                       <div className="mt-1 flex items-center gap-2">
                         <span
@@ -636,13 +643,11 @@ const UserPanel = () => {
                         ...current,
                         isPriority: false,
                         priorityReason: "",
-                        priorityReasonDescription: "",
                       }));
                       setSelectedPriority("normal");
                       setFormErrors((current) => ({
                         ...current,
                         priorityReason: "",
-                        priorityReasonDescription: "",
                       }));
                     }}
                     className={`rounded-xl border px-3 py-2 text-sm font-semibold ${
@@ -674,76 +679,74 @@ const UserPanel = () => {
               </div>
 
               {formData.isPriority ? (
-                <>
-                  <div>
-                    <label
-                      className="text-sm font-semibold text-slate-700"
-                      htmlFor="token-priority-reason"
-                    >
-                      Priority Reason
-                    </label>
-                    <select
-                      id="token-priority-reason"
-                      value={formData.priorityReason}
-                      onChange={(event) => {
-                        setFormData((current) => ({
-                          ...current,
-                          priorityReason: event.target.value,
-                        }));
-                        setFormErrors((current) => ({
-                          ...current,
-                          priorityReason: "",
-                        }));
-                      }}
-                      className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
-                    >
-                      <option value="">Select reason</option>
-                      {PRIORITY_REASON_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    {formErrors.priorityReason ? (
-                      <p className="mt-1 text-xs font-semibold text-red-600">
-                        {formErrors.priorityReason}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <div>
-                    <label
-                      className="text-sm font-semibold text-slate-700"
-                      htmlFor="token-priority-description"
-                    >
-                      Reason Description
-                    </label>
-                    <textarea
-                      id="token-priority-description"
-                      rows={3}
-                      maxLength={300}
-                      value={formData.priorityReasonDescription}
-                      onChange={(event) => {
-                        setFormData((current) => ({
-                          ...current,
-                          priorityReasonDescription: event.target.value,
-                        }));
-                        setFormErrors((current) => ({
-                          ...current,
-                          priorityReasonDescription: "",
-                        }));
-                      }}
-                      className="mt-1 w-full resize-none rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
-                      placeholder="Briefly describe the priority reason"
-                    />
-                    {formErrors.priorityReasonDescription ? (
-                      <p className="mt-1 text-xs font-semibold text-red-600">
-                        {formErrors.priorityReasonDescription}
-                      </p>
-                    ) : null}
-                  </div>
-                </>
+                <div>
+                  <label
+                    className="text-sm font-semibold text-slate-700"
+                    htmlFor="token-priority-reason"
+                  >
+                    Priority Reason
+                  </label>
+                  <select
+                    id="token-priority-reason"
+                    value={formData.priorityReason}
+                    onChange={(event) => {
+                      setFormData((current) => ({
+                        ...current,
+                        priorityReason: event.target.value,
+                      }));
+                      setFormErrors((current) => ({
+                        ...current,
+                        priorityReason: "",
+                      }));
+                    }}
+                    className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
+                  >
+                    <option value="">Select reason</option>
+                    {PRIORITY_REASON_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.priorityReason ? (
+                    <p className="mt-1 text-xs font-semibold text-red-600">
+                      {formErrors.priorityReason}
+                    </p>
+                  ) : null}
+                </div>
               ) : null}
+
+              <div>
+                <label
+                  className="text-sm font-semibold text-slate-700"
+                  htmlFor="token-priority-description"
+                >
+                  Reason Description
+                </label>
+                <textarea
+                  id="token-priority-description"
+                  rows={3}
+                  maxLength={300}
+                  value={formData.priorityReasonDescription}
+                  onChange={(event) => {
+                    setFormData((current) => ({
+                      ...current,
+                      priorityReasonDescription: event.target.value,
+                    }));
+                    setFormErrors((current) => ({
+                      ...current,
+                      priorityReasonDescription: "",
+                    }));
+                  }}
+                  className="mt-1 w-full resize-none rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
+                  placeholder="Briefly describe your reason"
+                />
+                {formErrors.priorityReasonDescription ? (
+                  <p className="mt-1 text-xs font-semibold text-red-600">
+                    {formErrors.priorityReasonDescription}
+                  </p>
+                ) : null}
+              </div>
 
               <div className="mt-2 flex items-center justify-end gap-2">
                 <button

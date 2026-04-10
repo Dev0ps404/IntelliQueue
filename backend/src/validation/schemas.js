@@ -20,13 +20,7 @@ export const createTokenSchema = {
         .regex(/^[0-9+()\-\s]{8,20}$/, "Invalid phone number format."),
       isPriority: z.boolean().default(false),
       priorityReason: z.enum(PRIORITY_REASONS).nullable().optional(),
-      priorityReasonDescription: z
-        .string()
-        .trim()
-        .min(3)
-        .max(300)
-        .nullable()
-        .optional(),
+      priorityReasonDescription: z.string().trim().min(3).max(300),
       priority: z.enum(TOKEN_PRIORITIES).optional(),
       includeQr: z.boolean().optional(),
       deviceId: z.string().min(1).max(120).optional(),
@@ -40,27 +34,11 @@ export const createTokenSchema = {
         });
       }
 
-      if (payload.isPriority && !payload.priorityReasonDescription) {
-        context.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["priorityReasonDescription"],
-          message: "Reason description is required when priority is enabled.",
-        });
-      }
-
       if (!payload.isPriority && payload.priorityReason) {
         context.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["priorityReason"],
           message: "Priority reason is allowed only for priority tokens.",
-        });
-      }
-
-      if (!payload.isPriority && payload.priorityReasonDescription) {
-        context.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["priorityReasonDescription"],
-          message: "Reason description is allowed only for priority tokens.",
         });
       }
     }),
