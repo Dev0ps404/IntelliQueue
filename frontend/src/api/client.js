@@ -18,6 +18,10 @@ export const tokenApi = {
     const response = await api.get("/tokens/queue");
     return response.data;
   },
+  cancelMyToken: async (tokenNumber) => {
+    const response = await api.patch(`/tokens/my/${tokenNumber}/cancel`);
+    return response.data;
+  },
 };
 
 export const adminApi = {
@@ -31,8 +35,24 @@ export const adminApi = {
     });
     return response.data;
   },
+  prioritizeToken: async (tokenId, boost = 2) => {
+    const response = await api.patch(`/admin/tokens/${tokenId}/prioritize`, {
+      boost,
+    });
+    return response.data;
+  },
   getStats: async () => {
     const response = await api.get("/admin/stats");
+    return response.data;
+  },
+  getAnalytics: async (hours = 24) => {
+    const response = await api.get("/admin/analytics", {
+      params: { hours },
+    });
+    return response.data;
+  },
+  getEvents: async (params = {}) => {
+    const response = await api.get("/admin/events", { params });
     return response.data;
   },
   getFlow: async () => {

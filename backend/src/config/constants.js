@@ -37,6 +37,16 @@ export const DEFAULT_QUEUE_CONFIG = {
   cacheTtlMs: 1500,
   historicalSampleSize: 150,
   autoServeNext: true,
+  workingHours: {
+    weekday: {
+      start: "09:00",
+      end: "18:00",
+    },
+    weekend: {
+      start: "10:00",
+      end: "14:00",
+    },
+  },
 };
 
 export const QUEUE_STATE_KEY = "global";

@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  cancelMyToken,
   createToken,
   getMyTokenQr,
   getMyToken,
@@ -34,6 +35,12 @@ router.get(
   authenticate(false),
   validateRequest(tokenNumberParamSchema),
   getMyTokenQr,
+);
+router.patch(
+  "/my/:tokenNumber/cancel",
+  authenticate(false),
+  validateRequest(tokenNumberParamSchema),
+  cancelMyToken,
 );
 
 export default router;

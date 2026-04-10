@@ -1,11 +1,13 @@
 import AppError from "../utils/appError.js";
 import { sendSuccess } from "../utils/apiResponse.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
+import { TOKEN_STATUS } from "../config/constants.js";
 import {
   buildQueueSnapshot,
   createTokenEntry,
   getTokenByNumber,
   getTokenQrByNumber,
+  updateTokenStatus,
 } from "../services/queueService.js";
 
 const actorFromRequest = (req) => {
@@ -78,6 +80,38 @@ export const getMyTokenQr = asyncHandler(async (req, res) => {
   return sendSuccess(res, {
     data: {
       tokenQr,
+    },
+  });
+});
+
+export const cancelMyToken = asyncHandler(async (req, res) => {
+  const { tokenNumber } = req.params;
+  const token = await getTokenByNumber(tokenNumber);
+
+  if (!token) {
+    throw new AppError("Token not found.", 404);
+  }
+
+  if (
+    token.status !== TOKEN_STATUS.WAITING &&
+    token.status !== TOKEN_STATUS.SERVING
+  ) {
+    throw new AppError("Only active tokens can be cancelled.", 400);
+  }
+
+  const io = req.app.get("io");
+
+  const updatedToken = await updateTokenStatus(
+    token._id,
+    TOKEN_STATUS.SKIPPED,
+    io,
+    actorFromRequest(req),
+  );
+
+  return sendSuccess(res, {
+    message: "Token cancelled successfully.",
+    data: {
+      token: updatedToken,
     },
   });
 });

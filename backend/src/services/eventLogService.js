@@ -1,4 +1,5 @@
 import QueueEvent from "../models/QueueEvent.js";
+import mongoose from "mongoose";
 import { logger } from "../utils/logger.js";
 
 export const logQueueEvent = async ({
@@ -8,12 +9,14 @@ export const logQueueEvent = async ({
   metadata = {},
 }) => {
   const actorRole = actor?.role || "system";
+  const actorUserId =
+    actor?.id && mongoose.Types.ObjectId.isValid(actor.id) ? actor.id : null;
 
   try {
     const event = await QueueEvent.create({
       eventType,
       token: tokenId,
-      actorUserId: actor?.id || null,
+      actorUserId,
       actorRole,
       metadata,
     });

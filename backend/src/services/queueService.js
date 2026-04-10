@@ -777,6 +777,7 @@ export const updateQueueConfig = async (partialConfig, io, actor = null) => {
     "autoServeNext",
     "cacheTtlMs",
     "historicalSampleSize",
+    "workingHours",
   ];
 
   for (const field of allowedFields) {

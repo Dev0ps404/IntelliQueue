@@ -7,6 +7,31 @@ const DEFAULT_FLOW = {
   maxPriorityStreak: 2,
   nearTurnThreshold: 2,
   autoServeNext: true,
+  workingHours: {
+    weekday: {
+      start: "09:00",
+      end: "18:00",
+    },
+    weekend: {
+      start: "10:00",
+      end: "14:00",
+    },
+  },
+};
+
+const normalizeWorkingHours = (workingHours) => {
+  const fallback = DEFAULT_FLOW.workingHours;
+
+  return {
+    weekday: {
+      start: workingHours?.weekday?.start || fallback.weekday.start,
+      end: workingHours?.weekday?.end || fallback.weekday.end,
+    },
+    weekend: {
+      start: workingHours?.weekend?.start || fallback.weekend.start,
+      end: workingHours?.weekend?.end || fallback.weekend.end,
+    },
+  };
 };
 
 const Settings = () => {
@@ -27,9 +52,17 @@ const Settings = () => {
 
     try {
       const response = await adminApi.getFlow();
-      const config = response.config || DEFAULT_FLOW;
+      const rawConfig = response.config || DEFAULT_FLOW;
+      const config = {
+        ...rawConfig,
+        workingHours: normalizeWorkingHours(rawConfig.workingHours),
+      };
       setFlow(config);
       setInitialFlow(config);
+      setWeekdayStart(config.workingHours.weekday.start);
+      setWeekdayEnd(config.workingHours.weekday.end);
+      setWeekendStart(config.workingHours.weekend.start);
+      setWeekendEnd(config.workingHours.weekend.end);
       setError("");
     } catch (requestError) {
       console.error(requestError);
@@ -51,9 +84,16 @@ const Settings = () => {
         Number(initialFlow.maxPriorityStreak) ||
       Number(flow.nearTurnThreshold) !==
         Number(initialFlow.nearTurnThreshold) ||
-      Boolean(flow.autoServeNext) !== Boolean(initialFlow.autoServeNext)
+      Boolean(flow.autoServeNext) !== Boolean(initialFlow.autoServeNext) ||
+      weekdayStart !==
+        normalizeWorkingHours(initialFlow.workingHours).weekday.start ||
+      weekdayEnd !==
+        normalizeWorkingHours(initialFlow.workingHours).weekday.end ||
+      weekendStart !==
+        normalizeWorkingHours(initialFlow.workingHours).weekend.start ||
+      weekendEnd !== normalizeWorkingHours(initialFlow.workingHours).weekend.end
     );
-  }, [flow, initialFlow]);
+  }, [flow, initialFlow, weekdayStart, weekdayEnd, weekendStart, weekendEnd]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -64,12 +104,30 @@ const Settings = () => {
         maxPriorityStreak: Number(flow.maxPriorityStreak),
         nearTurnThreshold: Number(flow.nearTurnThreshold),
         autoServeNext: Boolean(flow.autoServeNext),
+        workingHours: {
+          weekday: {
+            start: weekdayStart,
+            end: weekdayEnd,
+          },
+          weekend: {
+            start: weekendStart,
+            end: weekendEnd,
+          },
+        },
       };
 
       const response = await adminApi.updateFlow(payload);
-      const nextConfig = response.config || payload;
+      const rawNextConfig = response.config || payload;
+      const nextConfig = {
+        ...rawNextConfig,
+        workingHours: normalizeWorkingHours(rawNextConfig.workingHours),
+      };
       setFlow(nextConfig);
       setInitialFlow(nextConfig);
+      setWeekdayStart(nextConfig.workingHours.weekday.start);
+      setWeekdayEnd(nextConfig.workingHours.weekday.end);
+      setWeekendStart(nextConfig.workingHours.weekend.start);
+      setWeekendEnd(nextConfig.workingHours.weekend.end);
       setNotice("Configuration saved successfully.");
       setError("");
     } catch (requestError) {
@@ -82,6 +140,11 @@ const Settings = () => {
 
   const handleDiscard = () => {
     setFlow(initialFlow);
+    const initialHours = normalizeWorkingHours(initialFlow.workingHours);
+    setWeekdayStart(initialHours.weekday.start);
+    setWeekdayEnd(initialHours.weekday.end);
+    setWeekendStart(initialHours.weekend.start);
+    setWeekendEnd(initialHours.weekend.end);
     setNotice("Changes discarded.");
     setError("");
   };

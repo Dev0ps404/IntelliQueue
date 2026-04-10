@@ -70,6 +70,28 @@ const queueConfigSchema = new mongoose.Schema(
       type: Boolean,
       default: DEFAULT_QUEUE_CONFIG.autoServeNext,
     },
+    workingHours: {
+      weekday: {
+        start: {
+          type: String,
+          default: DEFAULT_QUEUE_CONFIG.workingHours.weekday.start,
+        },
+        end: {
+          type: String,
+          default: DEFAULT_QUEUE_CONFIG.workingHours.weekday.end,
+        },
+      },
+      weekend: {
+        start: {
+          type: String,
+          default: DEFAULT_QUEUE_CONFIG.workingHours.weekend.start,
+        },
+        end: {
+          type: String,
+          default: DEFAULT_QUEUE_CONFIG.workingHours.weekend.end,
+        },
+      },
+    },
   },
   {
     timestamps: true,

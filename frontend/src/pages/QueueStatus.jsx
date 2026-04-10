@@ -152,6 +152,12 @@ const QueueStatus = () => {
                     <p className="font-semibold text-slate-900">
                       {item.displayToken}
                     </p>
+                    <p className="text-xs text-slate-500">{item.name || "-"}</p>
+                    <p className="text-xs text-slate-500">
+                      {item.priorityReasonDescription ||
+                        item.priorityReason ||
+                        "-"}
+                    </p>
                     <p className="text-xs text-slate-500">
                       Position #{item.position ?? "-"}
                     </p>

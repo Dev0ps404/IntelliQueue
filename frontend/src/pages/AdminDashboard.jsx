@@ -12,32 +12,6 @@ import { adminApi } from "../api/client";
 import { useSocket } from "../context/SocketContext";
 import { formatWaitLabel } from "../utils/format";
 
-const FIRST_NAMES = [
-  "Elena",
-  "Jordan",
-  "Marcus",
-  "Noah",
-  "Sarah",
-  "Maya",
-  "Aarav",
-  "Ivy",
-];
-const LAST_NAMES = [
-  "Kendrick",
-  "Dixon",
-  "Webb",
-  "Mehta",
-  "Mitchell",
-  "Rao",
-  "Shaw",
-  "Cole",
-];
-
-const buildPseudoName = (tokenNumber) => {
-  const safe = Number(tokenNumber) || 1;
-  return `${FIRST_NAMES[safe % FIRST_NAMES.length]} ${LAST_NAMES[safe % LAST_NAMES.length]}`;
-};
-
 const AdminDashboard = () => {
   const socket = useSocket();
 
@@ -106,13 +80,17 @@ const AdminDashboard = () => {
     const keyword = searchTerm.trim().toLowerCase();
 
     return queue.filter((item) => {
-      const pseudoName = buildPseudoName(item.tokenNumber).toLowerCase();
+      const tokenName = String(item.name || "").toLowerCase();
+      const reasonText = String(
+        item.priorityReasonDescription || item.priorityReason || "",
+      ).toLowerCase();
 
       return (
         item.displayToken.toLowerCase().includes(keyword) ||
         item.priority.toLowerCase().includes(keyword) ||
         item.status.toLowerCase().includes(keyword) ||
-        pseudoName.includes(keyword)
+        tokenName.includes(keyword) ||
+        reasonText.includes(keyword)
       );
     });
   }, [queue, searchTerm]);
@@ -124,9 +102,26 @@ const AdminDashboard = () => {
       await adminApi.updateTokenStatus(token._id, status);
       setNotice(`${token.displayToken} marked as ${status}.`);
       setError("");
+      await loadDashboard();
     } catch (requestError) {
       console.error(requestError);
       setError("Unable to update token status.");
+    } finally {
+      setBusyTokenId(null);
+    }
+  };
+
+  const handlePrioritize = async (token) => {
+    setBusyTokenId(token._id);
+
+    try {
+      await adminApi.prioritizeToken(token._id, 2);
+      setNotice(`${token.displayToken} prioritized.`);
+      setError("");
+      await loadDashboard();
+    } catch (requestError) {
+      console.error(requestError);
+      setError("Unable to prioritize token.");
     } finally {
       setBusyTokenId(null);
     }
@@ -137,6 +132,7 @@ const AdminDashboard = () => {
       const response = await adminApi.advanceQueue();
       setNotice(response.message || "Queue advanced.");
       setError("");
+      await loadDashboard();
     } catch (requestError) {
       console.error(requestError);
       setError("Unable to advance queue.");
@@ -240,6 +236,7 @@ const AdminDashboard = () => {
                   const canComplete = item.status === "serving";
                   const canSkip =
                     item.status === "waiting" || item.status === "serving";
+                  const canPrioritize = item.status === "waiting";
 
                   return (
                     <tr
@@ -254,7 +251,14 @@ const AdminDashboard = () => {
                         #{item.displayToken}
                       </td>
                       <td className="px-4 py-4 text-slate-700">
-                        {buildPseudoName(item.tokenNumber)}
+                        <p className="font-semibold text-slate-800">
+                          {item.name || "-"}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {item.priorityReasonDescription ||
+                            item.priorityReason ||
+                            "No reason provided"}
+                        </p>
                       </td>
                       <td className="px-4 py-4">
                         <span
@@ -277,6 +281,15 @@ const AdminDashboard = () => {
                       </td>
                       <td className="px-4 py-4 md:px-6">
                         <div className="flex justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handlePrioritize(item)}
+                            disabled={!canPrioritize || busy}
+                            className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-amber-700 disabled:opacity-35"
+                            aria-label="Prioritize token"
+                          >
+                            <Sparkles size={14} />
+                          </button>
                           <button
                             type="button"
                             onClick={() => handleTokenAction(item, "completed")}

@@ -10,6 +10,10 @@ const objectIdSchema = z.object({
   tokenId: z.string().regex(/^[a-fA-F0-9]{24}$/, "Invalid token id."),
 });
 
+const timeStringSchema = z
+  .string()
+  .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Invalid time format. Use HH:MM.");
+
 export const createTokenSchema = {
   body: z
     .object({
@@ -88,6 +92,18 @@ export const queueFlowSchema = {
         .max(1000)
         .optional(),
       cacheTtlMs: z.coerce.number().int().min(250).max(15000).optional(),
+      workingHours: z
+        .object({
+          weekday: z.object({
+            start: timeStringSchema,
+            end: timeStringSchema,
+          }),
+          weekend: z.object({
+            start: timeStringSchema,
+            end: timeStringSchema,
+          }),
+        })
+        .optional(),
     })
     .refine((payload) => Object.keys(payload).length > 0, {
       message: "At least one configuration value is required.",

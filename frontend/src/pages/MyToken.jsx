@@ -19,6 +19,7 @@ const MyToken = () => {
   const [storedToken, setStoredToken] = useState(() => readMyToken());
   const [tokenData, setTokenData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
@@ -73,12 +74,37 @@ const MyToken = () => {
     };
   }, [socket, storedToken, loadToken]);
 
-  const handleClear = () => {
-    clearMyToken();
-    setStoredToken(null);
-    setTokenData(null);
-    setNotice("");
-    setError("");
+  const handleClear = async () => {
+    if (!storedToken?.tokenNumber) {
+      clearMyToken();
+      setStoredToken(null);
+      setTokenData(null);
+      setNotice("");
+      setError("");
+      return;
+    }
+
+    setCancelling(true);
+
+    try {
+      if (
+        tokenData &&
+        (tokenData.status === "waiting" || tokenData.status === "serving")
+      ) {
+        await tokenApi.cancelMyToken(storedToken.tokenNumber);
+      }
+
+      clearMyToken();
+      setStoredToken(null);
+      setTokenData(null);
+      setNotice("Token cancelled and cleared from session.");
+      setError("");
+    } catch (requestError) {
+      console.error(requestError);
+      setError("Unable to cancel token right now.");
+    } finally {
+      setCancelling(false);
+    }
   };
 
   if (!storedToken?.tokenNumber) {
@@ -196,9 +222,15 @@ const MyToken = () => {
         <button
           type="button"
           onClick={handleClear}
+          disabled={cancelling}
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-700"
         >
-          <Trash2 size={14} /> Cancel Token
+          {cancelling ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            <Trash2 size={14} />
+          )}
+          Cancel Token
         </button>
 
         {error ? (
