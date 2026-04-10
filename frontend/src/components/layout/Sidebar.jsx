@@ -82,7 +82,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         <button
           type="button"
           onClick={() => {
-            navigate("/dashboard");
+            navigate("/dashboard?openGenerateModal=1");
             onClose();
           }}
           className="mt-auto rounded-xl bg-gradient-to-r from-teal-700 to-emerald-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-700/20"

@@ -9,7 +9,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { tokenApi } from "../api/client";
 import { useSocket } from "../context/SocketContext";
 import { formatWaitLabel } from "../utils/format";
@@ -19,6 +19,8 @@ const PRIORITY_REASON_OPTIONS = ["Elderly", "Emergency", "VIP"];
 const PHONE_PATTERN = /^[0-9+()\-\s]{8,20}$/;
 
 const UserPanel = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const socket = useSocket();
 
   const [selectedPriority, setSelectedPriority] = useState("normal");
@@ -39,6 +41,7 @@ const UserPanel = () => {
     phone: "",
     isPriority: false,
     priorityReason: "",
+    priorityReasonDescription: "",
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -155,6 +158,10 @@ const UserPanel = () => {
       nextErrors.priorityReason = "Select a priority reason.";
     }
 
+    if (payload.isPriority && !payload.priorityReasonDescription.trim()) {
+      nextErrors.priorityReasonDescription = "Reason description is required.";
+    }
+
     return nextErrors;
   }, []);
 
@@ -166,9 +173,40 @@ const UserPanel = () => {
       ...current,
       isPriority,
       priorityReason: isPriority ? current.priorityReason : "",
+      priorityReasonDescription: isPriority
+        ? current.priorityReasonDescription
+        : "",
     }));
     setIsFormOpen(true);
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const shouldOpenModal = params.get("openGenerateModal");
+
+    if (!shouldOpenModal) {
+      return;
+    }
+
+    const requestedPriority = params.get("priority");
+    const priorityMode =
+      requestedPriority === "priority" ? "priority" : "normal";
+
+    openGenerateForm(priorityMode);
+
+    params.delete("openGenerateModal");
+    params.delete("priority");
+
+    const nextSearch = params.toString();
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: nextSearch ? `?${nextSearch}` : "",
+      },
+      { replace: true },
+    );
+  }, [location.pathname, location.search, navigate, openGenerateForm]);
 
   const closeGenerateForm = useCallback(() => {
     if (isGenerating) {
@@ -185,6 +223,9 @@ const UserPanel = () => {
       phone: formData.phone.trim(),
       isPriority: formData.isPriority,
       priorityReason: formData.isPriority ? formData.priorityReason : null,
+      priorityReasonDescription: formData.isPriority
+        ? formData.priorityReasonDescription.trim()
+        : null,
       priority: formData.isPriority ? "priority" : "normal",
     };
 
@@ -595,11 +636,13 @@ const UserPanel = () => {
                         ...current,
                         isPriority: false,
                         priorityReason: "",
+                        priorityReasonDescription: "",
                       }));
                       setSelectedPriority("normal");
                       setFormErrors((current) => ({
                         ...current,
                         priorityReason: "",
+                        priorityReasonDescription: "",
                       }));
                     }}
                     className={`rounded-xl border px-3 py-2 text-sm font-semibold ${
@@ -631,41 +674,75 @@ const UserPanel = () => {
               </div>
 
               {formData.isPriority ? (
-                <div>
-                  <label
-                    className="text-sm font-semibold text-slate-700"
-                    htmlFor="token-priority-reason"
-                  >
-                    Priority Reason
-                  </label>
-                  <select
-                    id="token-priority-reason"
-                    value={formData.priorityReason}
-                    onChange={(event) => {
-                      setFormData((current) => ({
-                        ...current,
-                        priorityReason: event.target.value,
-                      }));
-                      setFormErrors((current) => ({
-                        ...current,
-                        priorityReason: "",
-                      }));
-                    }}
-                    className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
-                  >
-                    <option value="">Select reason</option>
-                    {PRIORITY_REASON_OPTIONS.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  {formErrors.priorityReason ? (
-                    <p className="mt-1 text-xs font-semibold text-red-600">
-                      {formErrors.priorityReason}
-                    </p>
-                  ) : null}
-                </div>
+                <>
+                  <div>
+                    <label
+                      className="text-sm font-semibold text-slate-700"
+                      htmlFor="token-priority-reason"
+                    >
+                      Priority Reason
+                    </label>
+                    <select
+                      id="token-priority-reason"
+                      value={formData.priorityReason}
+                      onChange={(event) => {
+                        setFormData((current) => ({
+                          ...current,
+                          priorityReason: event.target.value,
+                        }));
+                        setFormErrors((current) => ({
+                          ...current,
+                          priorityReason: "",
+                        }));
+                      }}
+                      className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
+                    >
+                      <option value="">Select reason</option>
+                      {PRIORITY_REASON_OPTIONS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {formErrors.priorityReason ? (
+                      <p className="mt-1 text-xs font-semibold text-red-600">
+                        {formErrors.priorityReason}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label
+                      className="text-sm font-semibold text-slate-700"
+                      htmlFor="token-priority-description"
+                    >
+                      Reason Description
+                    </label>
+                    <textarea
+                      id="token-priority-description"
+                      rows={3}
+                      maxLength={300}
+                      value={formData.priorityReasonDescription}
+                      onChange={(event) => {
+                        setFormData((current) => ({
+                          ...current,
+                          priorityReasonDescription: event.target.value,
+                        }));
+                        setFormErrors((current) => ({
+                          ...current,
+                          priorityReasonDescription: "",
+                        }));
+                      }}
+                      className="mt-1 w-full resize-none rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
+                      placeholder="Briefly describe the priority reason"
+                    />
+                    {formErrors.priorityReasonDescription ? (
+                      <p className="mt-1 text-xs font-semibold text-red-600">
+                        {formErrors.priorityReasonDescription}
+                      </p>
+                    ) : null}
+                  </div>
+                </>
               ) : null}
 
               <div className="mt-2 flex items-center justify-end gap-2">

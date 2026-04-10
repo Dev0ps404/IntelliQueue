@@ -155,3 +155,40 @@
 {"timestamp":"2026-04-10T12:11:43.008Z","level":"info","message":"http_request","meta":{"method":"POST","path":"/api/tokens/create","status":400,"durationMs":1,"ip":"::1"}}
 {"timestamp":"2026-04-10T12:12:09.057Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/health","status":200,"durationMs":1,"ip":"::1"}}
 {"timestamp":"2026-04-10T12:12:17.314Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":285,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:16:07.133Z","level":"info","message":"socket_disconnected","meta":{"socketId":"MyUCxC-8Vt-ZFfZNAAAB","reason":"transport close"}}
+{"timestamp":"2026-04-10T12:16:07.708Z","level":"info","message":"socket_connected","meta":{"socketId":"0AO-QAteQmqbljItAAAE","transport":"websocket"}}
+{"timestamp":"2026-04-10T12:16:08.003Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":322,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:16:08.006Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":304,"durationMs":1,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:17:28.172Z","level":"info","message":"server_started","meta":{"url":"http://localhost:5000","authDisabled":true}}
+{"timestamp":"2026-04-10T12:17:28.376Z","level":"info","message":"socket_connected","meta":{"socketId":"-zRbGT5HAVj-_Y5VAAAB","transport":"websocket"}}
+{"timestamp":"2026-04-10T12:17:37.461Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/health","status":200,"durationMs":4,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:32.178Z","level":"info","message":"socket_disconnected","meta":{"socketId":"-zRbGT5HAVj-_Y5VAAAB","reason":"transport close"}}
+{"timestamp":"2026-04-10T12:18:32.674Z","level":"info","message":"socket_connected","meta":{"socketId":"SqB16GGm2PN4WqXfAAAD","transport":"websocket"}}
+{"timestamp":"2026-04-10T12:18:32.971Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":322,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:32.978Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":304,"durationMs":3,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:37.744Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/queue","status":200,"durationMs":440,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:37.749Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/queue","status":304,"durationMs":1,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:37.854Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/stats","status":200,"durationMs":556,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:37.856Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/stats","status":304,"durationMs":1,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:38.305Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":1,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:18:38.307Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":304,"durationMs":0,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:20:24.354Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":313,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:20:24.358Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":304,"durationMs":0,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:21:03.599Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":561,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:23:03.189Z","level":"info","message":"server_started","meta":{"url":"http://localhost:5000","authDisabled":true}}
+{"timestamp":"2026-04-10T12:23:05.032Z","level":"info","message":"socket_connected","meta":{"socketId":"5qC49IjxgUxR7hkaAAAB","transport":"websocket"}}
+{"timestamp":"2026-04-10T12:23:12.246Z","level":"info","message":"server_started","meta":{"url":"http://localhost:5000","authDisabled":true}}
+{"timestamp":"2026-04-10T12:23:12.369Z","level":"info","message":"socket_connected","meta":{"socketId":"9ZE3fHQmYox_qq3AAAAB","transport":"websocket"}}
+{"timestamp":"2026-04-10T12:23:21.508Z","level":"info","message":"server_started","meta":{"url":"http://localhost:5000","authDisabled":true}}
+{"timestamp":"2026-04-10T12:23:23.036Z","level":"info","message":"socket_connected","meta":{"socketId":"Kf3REzu8E-X7b74yAAAB","transport":"websocket"}}
+{"timestamp":"2026-04-10T12:23:38.850Z","level":"info","message":"server_started","meta":{"url":"http://localhost:5000","authDisabled":true}}
+{"timestamp":"2026-04-10T12:23:41.032Z","level":"info","message":"socket_connected","meta":{"socketId":"WREUCCq3jh_rEMt1AAAB","transport":"websocket"}}
+{"timestamp":"2026-04-10T12:23:59.392Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":305,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:23:59.396Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":304,"durationMs":0,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:24:25.903Z","level":"error","message":"queue_event_persist_failed","meta":{"eventType":"token_created","tokenId":"69d8ebf96c7f17414b346352","actorRole":"admin","error":"QueueEvent validation failed: actorUserId: Cast to ObjectId failed for value \"dev-user\" (type string) at path \"actorUserId\" because of \"BSONError\""}}
+{"timestamp":"2026-04-10T12:24:26.104Z","level":"error","message":"queue_event_persist_failed","meta":{"eventType":"counter_assigned","tokenId":"69d8ebf96c7f17414b346352","actorRole":"admin","error":"QueueEvent validation failed: actorUserId: Cast to ObjectId failed for value \"dev-user\" (type string) at path \"actorUserId\" because of \"BSONError\""}}
+{"timestamp":"2026-04-10T12:24:26.555Z","level":"error","message":"queue_event_persist_failed","meta":{"eventType":"queue_reordered","tokenId":null,"actorRole":"admin","error":"QueueEvent validation failed: actorUserId: Cast to ObjectId failed for value \"dev-user\" (type string) at path \"actorUserId\" because of \"BSONError\""}}
+{"timestamp":"2026-04-10T12:24:26.636Z","level":"info","message":"http_request","meta":{"method":"POST","path":"/api/tokens/create","status":201,"durationMs":944,"ip":"::1"}}
+{"timestamp":"2026-04-10T12:24:45.676Z","level":"info","message":"server_started","meta":{"url":"http://localhost:5000","authDisabled":true}}
+{"timestamp":"2026-04-10T12:24:45.743Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/tokens/queue","status":200,"durationMs":15,"ip":"::ffff:127.0.0.1"}}
+{"timestamp":"2026-04-10T12:24:46.097Z","level":"info","message":"socket_connected","meta":{"socketId":"_Apg4luIDvQkI7_bAAAB","transport":"websocket"}}

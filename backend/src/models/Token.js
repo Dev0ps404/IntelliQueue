@@ -43,6 +43,12 @@ const tokenSchema = new mongoose.Schema(
       enum: [...PRIORITY_REASONS, null],
       default: null,
     },
+    priorityReasonDescription: {
+      type: String,
+      default: null,
+      trim: true,
+      maxlength: 300,
+    },
     priority: {
       type: String,
       enum: TOKEN_PRIORITIES,
