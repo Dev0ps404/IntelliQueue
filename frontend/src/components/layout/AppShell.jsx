@@ -1,7 +1,8 @@
 import { Bell, Menu, Search, UserRound, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { adminApi, tokenApi } from "../../api/client";
+import { useSocket } from "../../context/SocketContext";
 import Sidebar from "./Sidebar";
 
 const TOP_LINKS = [
@@ -11,22 +12,103 @@ const TOP_LINKS = [
   { to: "/settings", label: "Settings" },
 ];
 
+const NOTIFICATION_LAST_READ_KEY = "ai_queue_notifications_last_read";
+
+const EVENT_LABELS = {
+  token_created: "Token Created",
+  token_status_changed: "Token Status Updated",
+  token_prioritized: "Token Prioritized",
+  queue_reordered: "Queue Reordered",
+  counter_assigned: "Counter Assigned",
+  flow_updated: "Flow Updated",
+  near_turn_notified: "Near Turn Notification",
+  auth_login: "Admin Login",
+};
+
+const toEventDescription = (event) => {
+  const metadata = event?.metadata || {};
+
+  switch (event?.eventType) {
+    case "token_created":
+      return `${metadata.name || "User"} requested ${metadata.priority || "normal"} token.`;
+    case "token_status_changed":
+      return `Status changed to ${metadata.status || "updated"}.`;
+    case "token_prioritized":
+      return `Priority boost applied (+${metadata.boost || 0}).`;
+    case "queue_reordered":
+      return `Queue adjusted (${metadata.reason || "system"}).`;
+    case "counter_assigned":
+      return `Assigned to ${metadata.counterId || "counter"}.`;
+    case "flow_updated":
+      return "Queue flow configuration updated.";
+    case "near_turn_notified":
+      return "Near-turn alert delivered.";
+    case "auth_login":
+      return "Authentication activity recorded.";
+    default:
+      return "Queue activity updated.";
+  }
+};
+
 const AppShell = () => {
+  const socket = useSocket();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+  const [notificationsError, setNotificationsError] = useState("");
+  const [lastReadAt, setLastReadAt] = useState(() => {
+    const stored = Number(localStorage.getItem(NOTIFICATION_LAST_READ_KEY));
+    return Number.isFinite(stored) ? stored : 0;
+  });
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchDataset, setSearchDataset] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState("");
 
-  const refreshNotifications = async () => {
+  const loadNotifications = useCallback(async (showLoader = false) => {
+    if (showLoader) {
+      setNotificationsLoading(true);
+    }
+
     try {
-      const response = await adminApi.getEvents({ limit: 20 });
-      setNotificationCount((response.events || []).length);
+      const response = await adminApi.getEvents({ limit: 30 });
+      setNotifications(response.events || []);
+      setNotificationsError("");
     } catch (error) {
       console.error(error);
+      setNotificationsError("Unable to load notifications.");
+    } finally {
+      if (showLoader) {
+        setNotificationsLoading(false);
+      }
+    }
+  }, []);
+
+  const markNotificationsRead = useCallback(() => {
+    const now = Date.now();
+    setLastReadAt(now);
+    localStorage.setItem(NOTIFICATION_LAST_READ_KEY, String(now));
+  }, []);
+
+  const unreadNotificationCount = useMemo(
+    () =>
+      notifications.filter(
+        (item) => new Date(item.createdAt).getTime() > lastReadAt,
+      ).length,
+    [notifications, lastReadAt],
+  );
+
+  const handleNotificationToggle = async () => {
+    const nextOpen = !isNotificationOpen;
+    setIsNotificationOpen(nextOpen);
+
+    if (nextOpen) {
+      setIsSearchOpen(false);
+      await loadNotifications(true);
+      markNotificationsRead();
     }
   };
 
@@ -46,8 +128,30 @@ const AppShell = () => {
   };
 
   useEffect(() => {
-    refreshNotifications();
-  }, []);
+    loadNotifications(true);
+  }, [loadNotifications]);
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+
+    const handleActivity = () => {
+      loadNotifications(false);
+    };
+
+    socket.on("queue:update", handleActivity);
+    socket.on("queue:reordered", handleActivity);
+    socket.on("token:created", handleActivity);
+    socket.on("token:status-changed", handleActivity);
+
+    return () => {
+      socket.off("queue:update", handleActivity);
+      socket.off("queue:reordered", handleActivity);
+      socket.off("token:created", handleActivity);
+      socket.off("token:status-changed", handleActivity);
+    };
+  }, [socket, loadNotifications]);
 
   useEffect(() => {
     if (!isSearchOpen) {
@@ -126,7 +230,10 @@ const AppShell = () => {
           <div className="flex items-center gap-2 text-slate-500">
             <button
               type="button"
-              onClick={() => setIsSearchOpen(true)}
+              onClick={() => {
+                setIsNotificationOpen(false);
+                setIsSearchOpen(true);
+              }}
               className="rounded-full p-2 transition hover:bg-slate-100 hover:text-slate-700"
               aria-label="Search"
             >
@@ -135,18 +242,15 @@ const AppShell = () => {
             <div className="relative">
               <button
                 type="button"
-                onClick={async () => {
-                  await refreshNotifications();
-                  navigate("/analytics");
-                }}
+                onClick={handleNotificationToggle}
                 className="rounded-full p-2 transition hover:bg-slate-100 hover:text-slate-700"
                 aria-label="Notifications"
               >
                 <Bell size={17} />
               </button>
-              {notificationCount > 0 ? (
+              {unreadNotificationCount > 0 ? (
                 <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-teal-700 px-1 text-[10px] font-semibold text-white">
-                  {notificationCount > 9 ? "9+" : notificationCount}
+                  {unreadNotificationCount > 9 ? "9+" : unreadNotificationCount}
                 </span>
               ) : null}
             </div>
@@ -156,6 +260,98 @@ const AppShell = () => {
           </div>
         </div>
       </header>
+
+      {isNotificationOpen ? (
+        <>
+          <button
+            type="button"
+            onClick={() => setIsNotificationOpen(false)}
+            className="fixed inset-0 z-40 bg-slate-900/20"
+            aria-label="Close notifications"
+          />
+
+          <div className="fixed right-4 top-20 z-50 w-[min(460px,calc(100%-1.5rem))] rounded-2xl border border-slate-200 bg-white shadow-2xl md:right-8">
+            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+              <div>
+                <p className="text-sm font-semibold text-slate-900">
+                  Notifications
+                </p>
+                <p className="text-xs text-slate-500">Latest queue activity</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await loadNotifications(true);
+                    markNotificationsRead();
+                  }}
+                  className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600"
+                >
+                  Refresh
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsNotificationOpen(false)}
+                  className="rounded-lg border border-slate-200 p-1.5 text-slate-500"
+                  aria-label="Close notifications panel"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            </div>
+
+            <div className="max-h-[380px] overflow-y-auto p-2">
+              {notificationsLoading ? (
+                <p className="rounded-xl px-3 py-4 text-sm text-slate-500">
+                  Loading notifications...
+                </p>
+              ) : notificationsError ? (
+                <p className="rounded-xl px-3 py-4 text-sm font-semibold text-red-600">
+                  {notificationsError}
+                </p>
+              ) : notifications.length ? (
+                notifications.map((event) => (
+                  <button
+                    key={event._id}
+                    type="button"
+                    onClick={() => {
+                      setIsNotificationOpen(false);
+                      navigate(
+                        event.eventType === "flow_updated"
+                          ? "/settings"
+                          : "/live-queue",
+                      );
+                    }}
+                    className="mb-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-left hover:bg-white"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">
+                          {EVENT_LABELS[event.eventType] || "Queue Activity"}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {toEventDescription(event)}
+                        </p>
+                      </div>
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+                        {new Date(event.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <p className="rounded-xl px-3 py-4 text-sm text-slate-500">
+                  No notifications yet.
+                </p>
+              )}
+            </div>
+          </div>
+        </>
+      ) : null}
 
       {isSearchOpen ? (
         <>
