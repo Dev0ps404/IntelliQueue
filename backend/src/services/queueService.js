@@ -808,7 +808,7 @@ export const createTokenEntry = async (
     phone,
     isPriority = false,
     priorityReason = null,
-    priorityReasonDescription = null,
+    priorityReasonDescription = "",
     priority,
     includeQr = false,
     deviceId = null,
