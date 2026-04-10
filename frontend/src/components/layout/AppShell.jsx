@@ -1,6 +1,7 @@
 import { Bell, Menu, Search, UserRound } from "lucide-react";
-import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { adminApi } from "../../api/client";
 import Sidebar from "./Sidebar";
 
 const TOP_LINKS = [
@@ -11,7 +12,22 @@ const TOP_LINKS = [
 ];
 
 const AppShell = () => {
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  const refreshNotifications = async () => {
+    try {
+      const response = await adminApi.getEvents({ limit: 20 });
+      setNotificationCount((response.events || []).length);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    refreshNotifications();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#eff3f7] text-slate-900">
@@ -56,18 +72,30 @@ const AppShell = () => {
           <div className="flex items-center gap-2 text-slate-500">
             <button
               type="button"
+              onClick={() => navigate("/live-queue")}
               className="rounded-full p-2 transition hover:bg-slate-100 hover:text-slate-700"
               aria-label="Search"
             >
               <Search size={17} />
             </button>
-            <button
-              type="button"
-              className="rounded-full p-2 transition hover:bg-slate-100 hover:text-slate-700"
-              aria-label="Notifications"
-            >
-              <Bell size={17} />
-            </button>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={async () => {
+                  await refreshNotifications();
+                  navigate("/analytics");
+                }}
+                className="rounded-full p-2 transition hover:bg-slate-100 hover:text-slate-700"
+                aria-label="Notifications"
+              >
+                <Bell size={17} />
+              </button>
+              {notificationCount > 0 ? (
+                <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-teal-700 px-1 text-[10px] font-semibold text-white">
+                  {notificationCount > 9 ? "9+" : notificationCount}
+                </span>
+              ) : null}
+            </div>
             <span className="flex h-9 w-9 items-center justify-center rounded-full border border-teal-200 bg-teal-50 text-teal-700">
               <UserRound size={16} />
             </span>
