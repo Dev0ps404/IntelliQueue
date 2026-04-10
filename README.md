@@ -1,56 +1,108 @@
-# AI-Powered Adaptive Queue System
+# 🚀 AI-Powered Adaptive Queue System
 
-A complete full-stack MERN application for smart queue management with real-time updates and fairness-aware priority handling.
+> ⚡ Smart • Fair • Real-time Queue Management using AI-inspired logic
 
-## Stack
+---
 
-- MongoDB + Mongoose
-- Express.js + Node.js
-- React.js + Vite + Tailwind CSS
-- Socket.io (real-time queue sync + notifications)
+## 🧠 Overview
 
-## Features
+An enterprise-grade MERN stack application that intelligently manages queues using fairness-aware priority algorithms, real-time updates, and dynamic flow control.
 
-### User Panel
+Designed for:
+- 🏥 Hospitals  
+- 🏦 Banks  
+- 🛠 Service Centers  
+- 🎓 Universities  
 
-- Generate token as Normal or Priority
-- View My Token with live status, position, and estimated wait time
-- View full queue with visual priority highlighting
-- Receive near-turn notifications in real time
+---
 
-### Admin Dashboard
+## 🛠 Tech Stack
 
-- View live queue updates
-- Mark tokens as completed or skipped
-- Manually prioritize waiting tokens
-- View queue stats (total, active, average wait)
-- Adjust queue flow dynamically:
-  - Average service minutes
-  - Max priority streak (fairness control)
-  - Max priority share
-  - Priority weight and starvation threshold
-  - Multi-counter count
-  - Near-turn threshold
-  - Auto-serve toggle
+| Layer        | Tech |
+|-------------|------|
+| 🗄 Database  | MongoDB + Mongoose |
+| ⚙ Backend   | Node.js + Express.js |
+| 🎨 Frontend | React.js + Vite + Tailwind CSS |
+| 🔄 Realtime | Socket.io |
+| 🔐 Auth     | JWT (Role-based access) |
 
-### Fairness Algorithm
+---
 
-Priority tokens are served faster but constrained by a max consecutive priority streak. When the streak limit is reached, a normal token is forced next if one is waiting.
+## ✨ Key Features
 
-### Backend Production Upgrade
+### 👤 User Panel
 
-- JWT authentication and role authorization (`admin`, `user`)
-- Request validation, centralized error handling, and structured logging
-- Security hardening with Helmet and rate limiting
-- Multi-counter queue engine with dynamic reordering
-- Queue event tracking and analytics timeline support
-- Historical service-time based wait estimation
-- Optional QR payload generation for token sharing and mobile workflows
-- API versioning support (`/api` and `/api/v1`)
+- 🎟 Generate Token (Normal / Priority)
+- 📊 Live Token Tracking (Position + ETA)
+- 📋 Full Queue Visualization
+- 🔔 Real-time Notifications (Near Turn Alerts)
+- 📱 QR Code for Token Sharing
 
-## Project Structure
+---
+
+### 🛡 Admin Dashboard
+
+- 📡 Live Queue Monitoring
+- ✅ Mark Tokens (Completed / Skipped)
+- ⚡ Manual Priority Control
+- 📈 Real-time Analytics Dashboard
+
+#### 🎛 Dynamic Queue Controls
+
+- ⏱ Average Service Time
+- 🔁 Max Priority Streak (Fairness Control)
+- ⚖ Priority Weight System
+- 🚫 Starvation Prevention
+- 🧮 Multi-Counter Support
+- 🔔 Near-Turn Trigger
+- 🤖 Auto-Serve Toggle
+
+---
+
+## 🧩 Fairness Algorithm (Core USP)
 
 ```text
+IF priority_streak < limit:
+    serve(priority_token)
+ELSE:
+    serve(normal_token)
+    reset(priority_streak)
+```
+
+💡 Goal:
+- Priority users get faster service  
+- Normal users never get ignored  
+
+---
+
+## 🏗 Architecture
+
+```text
+                ┌──────────────┐
+                │   Frontend   │
+                │ React + Vite │
+                └──────┬───────┘
+                       │
+              Socket.io + REST API
+                       │
+        ┌──────────────▼──────────────┐
+        │         Backend             │
+        │ Node + Express             │
+        │ - Controllers              │
+        │ - Services (Queue Engine)  │
+        │ - Middleware               │
+        └──────────────┬──────────────┘
+                       │
+                ┌──────▼──────┐
+                │  MongoDB    │
+                └─────────────┘
+```
+
+---
+
+## 📁 Project Structure
+
+```bash
 backend/
   src/
     config/
@@ -60,6 +112,7 @@ backend/
     services/
     socket/
     utils/
+
 frontend/
   src/
     api/
@@ -69,68 +122,146 @@ frontend/
     utils/
 ```
 
-## Local Setup
+---
 
-1. Copy environment templates:
+## 🔐 Security & Production Features
+
+- 🛡 JWT Authentication (`admin`, `user`)
+- 🚫 Rate Limiting
+- 🧱 Helmet Security Headers
+- 📦 Request Validation
+- 📜 Centralized Error Handling
+- 📊 Structured Logging System
+
+---
+
+## ⚡ Real-Time Engine
+
+- 🔄 Live Queue Sync using Socket.io  
+- 🎯 Token-specific notification rooms  
+- 📡 Broadcast updates to all users  
+- ⏳ Accurate wait-time prediction  
+
+---
+
+## 📊 Smart Analytics
+
+- 📈 Queue Performance Metrics
+- ⏱ Average Wait Time Tracking
+- 📜 Event Timeline Logs
+- 🔍 Historical Data Insights
+
+---
+
+## 🔌 API Overview
+
+### 🔑 Auth
+
+```bash
+POST   /api/auth/register
+POST   /api/auth/login
+GET    /api/auth/me
+```
+
+---
+
+### 👤 User
+
+```bash
+POST   /api/tokens/create
+GET    /api/tokens/my/:tokenNumber
+GET    /api/tokens/my/:tokenNumber/qr
+GET    /api/tokens/queue
+```
+
+---
+
+### 🛡 Admin
+
+```bash
+GET    /api/admin/queue
+PATCH  /api/admin/tokens/:tokenId/status
+PATCH  /api/admin/tokens/:tokenId/prioritize
+GET    /api/admin/stats
+GET    /api/admin/analytics
+GET    /api/admin/events
+GET    /api/admin/flow
+PATCH  /api/admin/flow
+POST   /api/admin/flow/advance
+```
+
+---
+
+## ⚙ Local Setup
+
+### 1️⃣ Setup Environment
 
 ```bash
 copy backend\.env.example backend\.env
 copy frontend\.env.example frontend\.env
 ```
 
-1. Install dependencies:
+---
+
+### 2️⃣ Install Dependencies
 
 ```bash
 npm install
 npm run install:all
 ```
 
-1. Start both services:
+---
+
+### 3️⃣ Run Project
 
 ```bash
 npm run dev
 ```
 
-- Backend: <http://localhost:5000>
-- Frontend: <http://localhost:5173>
+Backend: http://localhost:5000  
+Frontend: http://localhost:5173  
 
-## API Overview
+---
 
-### Auth Endpoints
+## 🧪 Dev Notes
 
-- `POST /api/auth/register` - create user account
-- `POST /api/auth/login` - get JWT access token
-- `GET /api/auth/me` - get authenticated profile
+- AUTH_DISABLED=true → Skip login (dev mode)
+- AUTH_DISABLED=false → Enable JWT auth
+- MONGO_MEMORY_FALLBACK=true → Local testing only
+- Use `/api/v1` for future-proof APIs
 
-### User Endpoints
+---
 
-- `POST /api/tokens/create` - generate token
-- `GET /api/tokens/my/:tokenNumber` - get token details
-- `GET /api/tokens/my/:tokenNumber/qr` - fetch QR data URL for a token
-- `GET /api/tokens/queue` - get current queue snapshot
+## 🏆 Highlights
 
-### Admin Endpoints
+✔ Real-time system  
+✔ Fairness-based algorithm  
+✔ Production-ready backend  
+✔ Scalable architecture  
+✔ Clean UI + responsive design  
 
-- `GET /api/admin/queue` - live queue
-- `PATCH /api/admin/tokens/:tokenId/status` - set `completed` or `skipped`
-- `PATCH /api/admin/tokens/:tokenId/prioritize` - manually boost token priority
-- `GET /api/admin/stats` - queue stats + analytics payload
-- `GET /api/admin/analytics` - queue analytics timeline
-- `GET /api/admin/events` - queue event logs
-- `GET /api/admin/flow` - flow configuration
-- `PATCH /api/admin/flow` - update flow configuration
-- `POST /api/admin/flow/advance` - manually trigger next token
+---
 
-## Notes
+## 💡 Future Enhancements
 
-- The backend auto-starts serving the next token when enabled via flow settings.
-- Socket.io broadcasts queue updates to all clients and targeted notifications to token-specific rooms.
-- Styling is responsive and optimized for desktop and mobile dashboards.
+- 🤖 AI-based wait prediction
+- 📱 Mobile App
+- 🌍 Multi-location queue sync
+- 🎤 Voice-based token calling
+- 📊 Advanced BI Dashboard
 
-## Backend Integration Guide
+---
 
-1. For local development with existing frontend (no login screen changes), keep `AUTH_DISABLED=true` in `backend/.env`.
-1. For production auth enforcement, set `AUTH_DISABLED=false` and configure `JWT_SECRET`.
-1. Use `/api/v1/*` endpoints for new mobile clients while keeping `/api/*` backward compatibility for existing frontend.
-1. If local MongoDB is unavailable, keep `MONGO_MEMORY_FALLBACK=true` for development only; disable it in production.
-1. Monitor `backend/logs/events.log` and `/api/admin/events` for queue and token lifecycle tracking.
+## 👨‍💻 Author
+
+**Devansh 🚀**
+
+---
+
+## ⭐ Support
+
+If you like this project:
+
+👉 Star ⭐ the repo  
+👉 Fork 🍴 it  
+👉 Contribute 💡  
