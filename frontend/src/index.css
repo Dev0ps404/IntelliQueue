@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #edf2f6;
+  --ink: #121926;
+  --muted: #64748b;
+  --line: #dbe4ee;
+  --surface: #ffffff;
+  --surface-soft: #f7fafc;
+  --accent: #0d7a67;
+  --accent-strong: #046f5c;
+  --accent-soft: #d9f3ee;
+  --priority: #f59e0b;
+  --danger: #dc2626;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background: linear-gradient(135deg, #f1f4f8, var(--bg-base));
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Sora", sans-serif;
+}
+
+.subtle-dot-bg {
+  background-image: radial-gradient(
+    rgba(15, 23, 42, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 14px 14px;
+}
+
+.surface-card {
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+  border-radius: 1rem;
+  box-shadow: 0 16px 35px -30px rgba(15, 23, 42, 0.7);
+}
+
+.muted-label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #72839b;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.chip-green {
+  background: #dcfce7;
+  color: #116149;
+}
+
+.chip-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.chip-amber {
+  background: #fef3c7;
+  color: #9a6600;
+}
+
+.chip-slate {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.fade-rise {
+  animation: fadeRise 0.45s ease-out both;
+}
+
+@keyframes fadeRise {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
