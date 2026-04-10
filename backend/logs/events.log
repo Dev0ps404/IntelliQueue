@@ -497,3 +497,19 @@
 {"timestamp":"2026-04-10T17:30:35.803Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/queue","status":304,"durationMs":1,"ip":"::1"}}
 {"timestamp":"2026-04-10T17:30:35.848Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/analytics?hours=24","status":200,"durationMs":42,"ip":"::1"}}
 {"timestamp":"2026-04-10T17:30:39.137Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/events?limit=30","status":304,"durationMs":52,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:00.050Z","level":"info","message":"socket_disconnected","meta":{"socketId":"sb1WiTYI7I9c4eiXAAAH","reason":"transport close"}}
+{"timestamp":"2026-04-10T17:44:01.898Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/events?limit=30","status":304,"durationMs":153,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:01.981Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/stats","status":200,"durationMs":267,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:01.995Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/stats","status":304,"durationMs":1,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:02.017Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/events?limit=30","status":304,"durationMs":70,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:02.238Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/queue","status":200,"durationMs":507,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:02.246Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/queue","status":304,"durationMs":1,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:02.299Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/analytics?hours=24","status":200,"durationMs":567,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:02.365Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/analytics?hours=24","status":200,"durationMs":55,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:03.392Z","level":"info","message":"socket_connected","meta":{"socketId":"38ulQiIr-HGMpW4-AAAK","transport":"websocket"}}
+{"timestamp":"2026-04-10T17:44:10.760Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/events?limit=30","status":304,"durationMs":44,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:16.241Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/queue","status":200,"durationMs":331,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:16.258Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/queue","status":304,"durationMs":7,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:16.382Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/stats","status":200,"durationMs":464,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:16.450Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/stats","status":304,"durationMs":17,"ip":"::1"}}
+{"timestamp":"2026-04-10T17:44:18.956Z","level":"info","message":"http_request","meta":{"method":"GET","path":"/api/admin/events?limit=30","status":304,"durationMs":51,"ip":"::1"}}
