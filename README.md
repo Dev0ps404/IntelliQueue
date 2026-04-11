@@ -2,11 +2,11 @@
 
 > ⚡ Smart • Fair • Real-time Queue Management using AI-inspired logic
 
-
-
+```
+```
 ## 🧠 Overview
 
-A## 🧠 IntelliQueue
+
 
 IntelliQueue is an AI-powered adaptive queue management system built using the MERN stack, designed to optimize and automate queue handling in real-time. It leverages intelligent priority algorithms combined with fairness-aware scheduling to ensure that high-priority users are served efficiently without causing starvation of normal users.
 
