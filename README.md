@@ -1,12 +1,21 @@
-# 🚀 AI-Powered Adaptive Queue System
+# 🚀 IntelliQueue (AI-Powered Adaptive Queue System)
 
 > ⚡ Smart • Fair • Real-time Queue Management using AI-inspired logic
 
----
+
 
 ## 🧠 Overview
 
-An enterprise-grade MERN stack application that intelligently manages queues using fairness-aware priority algorithms, real-time updates, and dynamic flow control.
+A## 🧠 IntelliQueue
+
+IntelliQueue is an AI-powered adaptive queue management system built using the MERN stack, designed to optimize and automate queue handling in real-time. It leverages intelligent priority algorithms combined with fairness-aware scheduling to ensure that high-priority users are served efficiently without causing starvation of normal users.
+
+The system provides a seamless experience for both users and administrators. Users can generate tokens, track their live position in the queue, and receive real-time notifications, while administrators gain full control over queue flow with dynamic configurations, analytics, and multi-counter management.
+
+With real-time synchronization powered by Socket.io, IntelliQueue ensures that all users stay updated with the latest queue status. The platform is scalable, secure, and production-ready, making it suitable for use in hospitals, banks, service centers, and other high-demand environments.
+
+By combining smart automation, real-time updates, and fairness-driven logic, IntelliQueue transforms traditional queue systems into intelligent, efficient, and user-friendly solutions.
+
 
 Designed for:
 - 🏥 Hospitals  
