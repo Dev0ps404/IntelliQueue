@@ -1,9 +1,7 @@
 # 🚀 IntelliQueue (AI-Powered Adaptive Queue System)
 
 > ⚡ Smart • Fair • Real-time Queue Management using AI-inspired logic
-
-```
-```
+---
 ## 🧠 Overview
 
 
